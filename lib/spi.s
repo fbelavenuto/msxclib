@@ -19,6 +19,7 @@
 
 	.module spi
 	.optsdcc -mz80
+	.include "hardware.hs"
 
 	.area	_CODE
 
