@@ -5,10 +5,8 @@
 
 
 void puts(const char *s) {
-	char *s2 = (char *)s;
-	while (*s2 != 0) {
-		putchar(*s2);
-		s2++;
+	while (*s != 0) {
+		putchar(*s++);
 	}
 }
 
