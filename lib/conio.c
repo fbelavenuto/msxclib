@@ -4,13 +4,13 @@
 #include "conio.h"
 
 
-void puts(char *s) {
-	while (*s != 0) {
-		putchar(*s);
-		s++;
+void puts(const char *s) {
+	char *s2 = (char *)s;
+	while (*s2 != 0) {
+		putchar(*s2);
+		s2++;
 	}
 }
-
 
 void puthex(int8_t nibbles, uint16_t v) {
 	int8_t i = nibbles - 1;
@@ -25,16 +25,13 @@ void puthex(int8_t nibbles, uint16_t v) {
 	}
 }
 
-
 void puthex8(uint8_t v) {
 	puthex(2, (uint16_t) v);
 }
 
-
 void puthex16(uint16_t v) {
 	puthex(4, v);
 }
-
 
 void putdec(int16_t digits, uint16_t v) {
 	uint8_t fz = 0;

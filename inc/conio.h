@@ -7,9 +7,9 @@
 #include "types.h"
 
 
-extern void putchar(char c);
+extern void putchar(const char c);
 extern char getchar(void);
-extern void puts(char *s);
+extern void puts(const char *s);
 extern void puthex8(uint8_t v);
 extern void puthex16(uint16_t v);
 extern void putdec8(uint8_t v);
