@@ -8,6 +8,18 @@
  */
 void clearKeyBuf(void);
 
+/* readSlot: Read one byte from addr in the other slot
+ * Input: slot number in format E...SSPP, addr absolute
+ * Output: byte read
+ */
+unsigned char readSlot(unsigned char slot, unsigned int addr);
+
+/* writeSlot: Write one byte to addr in the other slot
+ * Input: byte to wrtie, slot number in format E...SSPP, addr absolute
+ * Output: none
+ */
+void writeSlot(unsigned char slot, unsigned int addr, unsigned char byte);
+
 /* putRamFrame1: Put RAM in Frame 1
  * Input: none
  * Output: none
