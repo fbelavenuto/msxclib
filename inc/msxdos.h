@@ -100,16 +100,16 @@ typedef struct {
 extern uint8_t dosversion;
 extern uint8_t last_error;
 
-extern void msxdos_init(void);
-extern int8_t open(char *filepath, uint8_t flags);
-extern int8_t creat(char *filepath, uint8_t flags, uint8_t attrib);
-extern int8_t close(int8_t handle);
-extern int8_t dup(int8_t handle);
-extern int16_t read(int8_t handle, void *buffer, int16_t bytesToRead);
-extern int16_t write(int8_t handle, void *buffer, int16_t bytesToWrite);
-extern uint32_t lseek(int8_t fhandle, uint32_t offset, uint8_t method);
-extern uint32_t dos1GetFilesize(void);
-extern void exit(int8_t error);
-extern unsigned char getDeviceInfo(unsigned char index, void *buffer);
+void msxdos_init(void);
+int8_t open(char *filepath, uint8_t flags) __sdcccall(0);
+int8_t creat(char *filepath, uint8_t flags, uint8_t attrib) __sdcccall(0);
+int8_t close(int8_t handle);
+int8_t dup(int8_t handle);
+int16_t read(int8_t handle, void *buffer, int16_t bytesToRead) __sdcccall(0);
+int16_t write(int8_t handle, void *buffer, int16_t bytesToWrite) __sdcccall(0);
+uint32_t lseek(int8_t fhandle, uint32_t offset, uint8_t method) __sdcccall(0);
+uint32_t dos1GetFilesize(void);
+void exit(int8_t error);
+unsigned char getDeviceInfo(unsigned char index, void *buffer);
 
 #endif

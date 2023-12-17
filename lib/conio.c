@@ -1,8 +1,27 @@
 
-
 #include "types.h"
 #include "conio.h"
 
+#define BDOS 5
+
+void putchar(const char c) __naked {
+	__asm
+		;A = c
+		ld		e, a
+		ld		c, #2
+		call	BDOS
+		ret
+	__endasm;
+}
+
+char getchar(void) {
+	__asm
+		ld		c, #8
+		call	BDOS
+		ld		a, l
+		ret		; A = return value
+	__endasm;
+}
 
 void puts(const char *s) {
 	while (*s != 0) {

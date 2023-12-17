@@ -118,16 +118,12 @@ parloopend:
 	;* Command line processing done. Here, C=number of parameters.
 
 cont:
-	ld	hl,#0x100
-	ld	b,#0
-	push	bc		;Pass info as parameters to "main"
-	push	hl
-
 	;--- Step 3: Call the "main" function
-	push	de
 	ld	de, #_HEAP_start
 	ld	(_heap_top), de
-	pop	de
+	ld		hl, #0x100
+	ld      d, #0
+	ld      e, c      ;Pass info as parameters to "main"
 
 	call	_main
 
@@ -135,7 +131,7 @@ cont:
 	;    Termination code for DOS 2 was returned on L.
 
 	ld	c,#0x62		;DOS 2 function for program termination (_TERM)
-	ld	b,l
+	ld	b,e
 	call	5		;On DOS 2 this terminates; on DOS 1 this returns...
 	ld	c,#0x0
 	jp	5		;...and then this one terminates

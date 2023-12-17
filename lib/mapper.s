@@ -48,11 +48,11 @@ _mpInit::
 	ld	de, #mpfAllocSeg	; copy jumptable
 	ld	bc, #16 * 3
 	ldir
-	ld	l, #0
+	ld	a, #0
 .exit1:
 	ret
 .error1:
-	ld	l, #1
+	ld	a, #1
 	ret
 
 ;-------------------------------------------------------------------------------
@@ -102,7 +102,6 @@ nmp_exit2:
 	ld	a, d
 	ld	b, #3		; Exclude initial 64K (last page-3)
 	sub	b
-	ld	l, a
 	ret
 
 ;-------------------------------------------------------------------------------
@@ -112,10 +111,8 @@ _allocUserSegment::
 	xor	a
 	ld	b, a
 	call	mpfAllocSeg
-	ld	l, #0
-	jr	c, .exit2
-	ld	l, a
-.exit2:
+	ret	nc
+	ld	a, #0
 	ret
 
 ;-------------------------------------------------------------------------------
@@ -126,10 +123,8 @@ _allocSysSegment::
 	ld	b, a
 	inc	a
 	call	mpfAllocSeg
-	ld	l, #0
-	jr	c, .exit3
-	ld	l, a
-.exit3:
+	ret	nc
+	ld	a, #0
 	ret
 
 ;-------------------------------------------------------------------------------
@@ -142,54 +137,41 @@ _freeSegment::
 	add	iy, sp
 	ld	a, 2(iy)
 	call	mpfFreeSeg
-	ld	l, #0
-	jr	c, .exit4
-	ld	l, #1
-.exit4:
+	ret	nc
+	ld	a, #0
 	ret
 
 ;-------------------------------------------------------------------------------
 ; unsigned char getCurSegFrame1(void)
 ;-------------------------------------------------------------------------------
 _getCurSegFrame1::
-	call	mpfGetP1
-	ld	l, a
-	ret
+	jp	mpfGetP1
 
 ;-------------------------------------------------------------------------------
 ; unsigned char getCurSegFrame2(void)
 ;-------------------------------------------------------------------------------
 _getCurSegFrame2::
-	call	mpfGetP2
-	ld	l, a
-	ret
+	jp	mpfGetP2
 
 ;-------------------------------------------------------------------------------
 ; void putSegFrame1(unsigned char segm)
 ;-------------------------------------------------------------------------------
 _putSegFrame1::
-	ld	iy, #0
-	add	iy, sp
-	ld	a, 2(iy)
-	call	mpfPutP1
-	ret
+	; A = segm
+	jp	mpfPutP1
 
 ;-------------------------------------------------------------------------------
 ; void putSegFrame2(unsigned char segm)
 ;-------------------------------------------------------------------------------
 _putSegFrame2::
-	ld	iy, #0
-	add	iy, sp
-	ld	a, 2(iy)
-	call	mpfPutP2
-	ret
+	; A = segm
+	jp	mpfPutP2
 
 ;-------------------------------------------------------------------------------
 myAlloc:
 	ld	hl, #initSeg
 	ld	a, (hl)
 	inc	(hl)
-	ld	l, a
 	ret
 
 ;-------------------------------------------------------------------------------

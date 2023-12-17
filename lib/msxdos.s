@@ -180,7 +180,7 @@ _msxdos_init_error:
 	jr	_msxdos_init_exit
 
 ;-------------------------------------------------------------------------------
-; int8_t open(char *filepath, uint8_t flags);
+; int8_t open(char *filepath, uint8_t flags) __sdcccall(0);
 ;-------------------------------------------------------------------------------
 _open::
 	ld	iy, #0
@@ -219,7 +219,7 @@ _open_dos1:
 	ret
 
 ;-------------------------------------------------------------------------------
-; int8_t creat(char *filepath, uint8_tflags, uint8_t attrib)
+; int8_t creat(char *filepath, uint8_tflags, uint8_t attrib) __sdcccall(0)
 ;-------------------------------------------------------------------------------
 _creat::
 	ld	iy, #0
@@ -252,16 +252,14 @@ _creat_dos1:
 ; int8_t close(int8_t handle)
 ;-------------------------------------------------------------------------------
 _close::
+	; A = handle
+	ld	b, a
 	ld	a, (_dosversion)
 	cp	#2
 	jr	c, _close_dos1
-	ld	iy, #0
-	add	iy, sp
-	ld	b, 2(iy)	; handle
 	ld	c, #_CLOSE
 _close_call:
 	call	callBDOS
-	ld	l, a
 	ret
 _close_dos1:
 	ld	de, #FCB
@@ -272,24 +270,23 @@ _close_dos1:
 ; int8_t dup(int8_t handle)
 ;-------------------------------------------------------------------------------
 _dup::
+	; A = handle
+	ld	b, a
 	ld	a, (_dosversion)
 	cp	#2
 	jr	nc, _dup_dos2
 _dup_error:
-	ld	l, #-1		; Error
+	ld	a, #-1		; Error
 	ret
 _dup_dos2:
-	ld	iy, #0
-	add	iy, sp
-	ld	b, 2(iy)	; handle
 	ld	c, #_DUP
 	call	callBDOS
 	jr	nz, _dup_error
-	ld	l, b
-	ret	
+	ld	a, b
+	ret
 
 ;-------------------------------------------------------------------------------
-; int16_t read(int8_t handle, void *buffer, int16_t bytesToRead)
+; int16_t read(int8_t handle, void *buffer, int16_t bytesToRead) __sdcccall(0)
 ;-------------------------------------------------------------------------------
 _read::
 	ld	iy, #0
@@ -325,7 +322,7 @@ _read_dos1:
 	ret
 
 ;-------------------------------------------------------------------------------
-; write(int8_t handle, void *buffer, int16_t bytesToWrite)
+; write(int8_t handle, void *buffer, int16_t bytesToWrite) __sdcccall(0)
 ;-------------------------------------------------------------------------------
 _write::
 	ld	iy, #0
@@ -361,7 +358,7 @@ _write_dos1:
 	ret
 
 ;-------------------------------------------------------------------------------
-; uint32_t lseek(int8_t fhandle, uint32_t offset, uint8_t method)
+; uint32_t lseek(int8_t fhandle, uint32_t offset, uint8_t method) __sdcccall(0)
 ;-------------------------------------------------------------------------------
 _lseek::
 	ld	a, (_dosversion)
@@ -398,9 +395,8 @@ _dos1GetFilesize::
 ; exit(int8_t error)
 ;-------------------------------------------------------------------------------
 _exit::
-	ld	iy, #0
-	add	iy, sp
-	ld	b, 2(iy)	; error
+	; A = error
+	ld	b, a
 	ld	c, #_TERM
 	jp	callBDOS
 
@@ -408,20 +404,17 @@ _exit::
 ; unsigned char getDeviceInfo(unsigned char index, void *buffer)
 ;-------------------------------------------------------------------------------
 _getDeviceInfo::
-	ld	iy, #0
-	add	iy, sp
-	ld	a, 2(iy)
+	; A = index
+	; DE = *buffer
 	or	a
 	jr	z, _getDeviceInfo_error
-	ld	l, 3(iy)
-	ld	h, 4(iy)
+	ex	de, hl
 	ld	c, #0x78
 	call	BDOS
 	ld	(_last_error),a
-	ld	l, a
 	ret	
 _getDeviceInfo_error:
-	ld	l, #1
+	ld	a, #1
 	ret
 
 ;-------------------------------------------------------------------------------
